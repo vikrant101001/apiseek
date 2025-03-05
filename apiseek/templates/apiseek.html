@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>APISKEEK Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="/apiseek/static/style.css">
+    <style>
+        /* Basic styling in case static/style.css is not provided */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f4f7;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: auto;
+        }
+        .api-box {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+        .api-box:hover {
+            transform: scale(1.02);
+        }
+        .api-title {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .api-stats {
+            display: flex;
+            gap: 20px;
+        }
+        .stat {
+            font-size: 1.1em;
+        }
+        .stat span {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>APISKEEK Dashboard</h1>
+        {% for endpoint, data in stats.items() %}
+            <div class="api-box">
+                <div class="api-title">{{ endpoint }}</div>
+                <div class="api-stats">
+                    <div class="stat">Requests: <span>{{ data.requests }}</span></div>
+                    <div class="stat">Successful: <span>{{ data.successful }}</span></div>
+                    <div class="stat">Failed: <span>{{ data.failed }}</span></div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
