@@ -1,167 +1,97 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>APISEEK Dashboard</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap">
-    <link rel="stylesheet" type="text/css" href="/apiseek/static/style.css">
-    <style>
-        :root {
-            --bg-color: #f7f9fc;
-            --primary-color: #5a9bd8; /* Calm blue */
-            --secondary-color: #4e8c6a; /* Calm green */
-            --text-color: #333;
-            --light-text: #555;
-            --box-bg: #ffffff;
-            --border-color: #e0e0e0;
-            --toggle-bg: #5a9bd8;
-            --toggle-bg-hover: #4a8ac2;
-            --detail-bg: #f1f6fa;
-        }
-        body {
-            font-family: 'Open Sans', sans-serif;
-            background: var(--bg-color);
-            margin: 0;
-            padding: 20px;
-            color: var(--text-color);
-        }
-        .container {
-            max-width: 1000px;
-            margin: auto;
-        }
-        h1 {
-            text-align: center;
-            margin-bottom: 40px;
-            color: var(--primary-color);
-        }
-        .api-box {
-            background: var(--box-bg);
-            border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 30px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
-            border-left: 5px solid var(--primary-color);
-            transition: transform 0.2s ease-in-out;
-        }
-        .api-box:hover {
-            transform: translateY(-4px);
-        }
-        .api-title {
-            font-size: 1.6em;
-            margin-bottom: 15px;
-            font-weight: 600;
-            color: var(--primary-color);
-        }
-        .stats-summary {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            margin-bottom: 15px;
-        }
-        .stat {
-            font-size: 1.1em;
-        }
-        .stat span {
-            font-weight: 600;
-            color: var(--secondary-color);
-        }
-        .method-header {
-            font-size: 1.2em;
-            color: var(--light-text);
-            margin-top: 15px;
-            margin-bottom: 8px;
-            padding-bottom: 5px;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .toggle-btn {
-            background-color: var(--toggle-bg);
-            color: #fff;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 6px;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background-color 0.2s;
-        }
-        .toggle-btn:hover {
-            background-color: var(--toggle-bg-hover);
-        }
-        .details {
-            display: none;
-            margin-top: 15px;
-            padding: 15px;
-            background: var(--detail-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
-        }
-        .details .stat {
-            margin-bottom: 8px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>APISEEK Dashboard</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap">
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom animation for title */
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .animate-fadeInScale {
+  animation: fadeInScale 1s ease-out;
+  animation-delay: 0s;
+  animation-fill-mode: forwards;
+}
+
+  </style>
 </head>
-<body>
-    <div class="container">
-        <h1>APISEEK Ver. 0.2</h1>
-        {% for endpoint, data in stats.items() %}
-            <div class="api-box">
-                <!-- Endpoint title -->
-                <div class="api-title">{{ endpoint }}</div>
-                
-                <!-- Overall basic stats -->
-                <div class="stats-summary">
-                    <div class="stat">Total Requests: <span>{{ data.requests }}</span></div>
-                    <div class="stat">Successful: <span>{{ data.successful }}</span></div>
-                    <div class="stat">Failed: <span>{{ data.failed }}</span></div>
+<body class="bg-gray-900 text-gray-100 font-sans">
+  <div class="container mx-auto p-6">
+    <h1 class="text-center text-4xl font-bold mb-10 animate-fadeInScale">APISEEK Ver. 0.2</h1>
+    {% for endpoint, data in stats.items() %}
+      <div class="api-box bg-gray-800 rounded-lg p-6 mb-8 shadow-lg border-l-4 border-blue-500 transition-transform transform hover:scale-105 animate-fadeInScale">
+        <!-- Endpoint title -->
+        <div class="api-title text-2xl font-semibold mb-4 text-blue-400">{{ endpoint }}</div>
+        
+        <!-- Overall basic stats -->
+        <div class="stats-summary grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+          <div class="stat text-lg">Total Requests: <span class="font-bold text-green-300">{{ data.requests }}</span></div>
+          <div class="stat text-lg">Successful: <span class="font-bold text-green-300">{{ data.successful }}</span></div>
+          <div class="stat text-lg">Failed: <span class="font-bold text-red-400">{{ data.failed }}</span></div>
+        </div>
+        
+        <!-- Display available HTTP methods (always visible) -->
+        {% if data.by_method %}
+          <div class="mb-4">
+          {% for method, mdata in data.by_method.items() %}
+            <div class="method-header text-xl font-medium border-b border-gray-700 py-1">{{ method }}</div>
+          {% endfor %}
+          </div>
+        {% endif %}
+        
+        <!-- Toggle button for more details -->
+        <button class="toggle-btn bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors mb-4" onclick="toggleDetails(this)">Show More Details</button>
+        
+        <!-- Hidden details section -->
+        <div class="details hidden bg-gray-700 rounded p-4">
+          <!-- Overall response time metrics -->
+          <div class="stats-summary grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
+            <div class="stat text-sm">Avg Response: <span class="font-bold text-yellow-300">{{ data.response_stats.avg if data.response_stats.avg is not none else "N/A" }}</span> sec</div>
+            <div class="stat text-sm">Min Response: <span class="font-bold text-yellow-300">{{ data.response_stats.min if data.response_stats.min is not none else "N/A" }}</span> sec</div>
+            <div class="stat text-sm">Max Response: <span class="font-bold text-yellow-300">{{ data.response_stats.max if data.response_stats.max is not none else "N/A" }}</span> sec</div>
+            <div class="stat text-sm">Median Response: <span class="font-bold text-yellow-300">{{ data.response_stats.median if data.response_stats.median is not none else "N/A" }}</span> sec</div>
+          </div>
+          
+          <!-- Per-method detailed metrics -->
+          {% if data.by_method %}
+            {% for method, mdata in data.by_method.items() %}
+              {% if mdata.recent %}
+                <div class="stats-summary grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div class="stat text-sm">Most recent call Timestamp: <span class="font-bold text-yellow-300">{{ mdata.recent.timestamp }}</span></div>
+                  <div class="stat text-sm">Response Time: <span class="font-bold text-yellow-300">{{ mdata.recent.response_time }}</span> sec</div>
                 </div>
-                
-                <!-- Display available HTTP methods (always visible) -->
-                {% if data.by_method %}
-                    {% for method, mdata in data.by_method.items() %}
-                        <div class="method-header">{{ method }}</div>
-                    {% endfor %}
-                {% endif %}
-                
-                <!-- Toggle button for more details -->
-                <button class="toggle-btn" onclick="toggleDetails(this)">Show More Details</button>
-                
-                <!-- Hidden details section -->
-                <div class="details">
-                    <!-- Overall response time metrics -->
-                    <div class="stats-summary">
-                        <div class="stat">Avg Response: <span>{{ data.response_stats.avg if data.response_stats.avg is not none else "N/A" }}</span> sec</div>
-                        <div class="stat">Min Response: <span>{{ data.response_stats.min if data.response_stats.min is not none else "N/A" }}</span> sec</div>
-                        <div class="stat">Max Response: <span>{{ data.response_stats.max if data.response_stats.max is not none else "N/A" }}</span> sec</div>
-                        <div class="stat">Median Response: <span>{{ data.response_stats.median if data.response_stats.median is not none else "N/A" }}</span> sec</div>
-                    </div>
-                    
-                    <!-- Per-method detailed metrics -->
-                    {% if data.by_method %}
-                        {% for method, mdata in data.by_method.items() %}
-                            {% if mdata.recent %}
-                                <div class="stats-summary">
-                                    <div class="stat">Most Recent Call:</div>
-                                    <div class="stat">Timestamp: <span>{{ mdata.recent.timestamp }}</span></div>
-                                    <div class="stat">Response Time: <span>{{ mdata.recent.response_time }}</span> sec</div>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-        {% endfor %}
-    </div>
-    
-    <script>
-        function toggleDetails(button) {
-            var detailsDiv = button.nextElementSibling;
-            if (detailsDiv.style.display === "none" || detailsDiv.style.display === "") {
-                detailsDiv.style.display = "block";
-                button.innerText = "Show Less Details";
-            } else {
-                detailsDiv.style.display = "none";
-                button.innerText = "Show More Details";
-            }
-        }
-    </script>
+              {% endif %}
+            {% endfor %}
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  
+  <script>
+    function toggleDetails(button) {
+      var detailsDiv = button.nextElementSibling;
+      if (detailsDiv.classList.contains("hidden")) {
+        detailsDiv.classList.remove("hidden");
+        button.innerText = "Show Less Details";
+      } else {
+        detailsDiv.classList.add("hidden");
+        button.innerText = "Show More Details";
+      }
+    }
+  </script>
 </body>
 </html>
+
+
