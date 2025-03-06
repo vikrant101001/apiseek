@@ -95,7 +95,7 @@ LinkedIn: [Programming Vikrant](https://www.linkedin.com/in/programming-vikrant/
 Let's discuss new features and improvements that can take APISKEEK from version 0.2 to 0.5 and beyond. Once we reach a larger user base, we'll set up proper community channels and governance to further develop this project.
 
 ### License
-APISKEEK is released under the MIT License.
+APISEEK is released under the MIT License.
 
 
 
