@@ -1,4 +1,4 @@
-# APISKEEK
+# APISEEK
 
 APISEEK is a one-stop shop for every FastAPI request, providing essential metrics and insights for each API endpoint. It’s ideal for individuals and organizations looking to easily monitor API usage, performance, and user interactions.
 
