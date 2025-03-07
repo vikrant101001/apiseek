@@ -7,7 +7,7 @@
   <!-- Tailwind via CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Custom animation for title */
+    /* Custom animation for title and cards */
     @keyframes fadeInScale {
       0% {
         opacity: 0;
@@ -19,64 +19,77 @@
       }
     }
     .animate-fadeInScale {
-  animation: fadeInScale 1s ease-out;
-  animation-delay: 0s;
-  animation-fill-mode: forwards;
-}
-
+      animation: fadeInScale 1s ease-out;
+      animation-delay: 0s;
+      animation-fill-mode: forwards;
+    }
   </style>
 </head>
 <body class="bg-gray-900 text-gray-100 font-sans">
-  <div class="container mx-auto p-6">
-    <h1 class="text-center text-4xl font-bold mb-10 animate-fadeInScale">APISEEK Ver. 0.2</h1>
-    {% for endpoint, data in stats.items() %}
-      <div class="api-box bg-gray-800 rounded-lg p-6 mb-8 shadow-lg border-l-4 border-blue-500 transition-transform transform hover:scale-105 animate-fadeInScale">
-        <!-- Endpoint title -->
-        <div class="api-title text-2xl font-semibold mb-4 text-blue-400">{{ endpoint }}</div>
-        
-        <!-- Overall basic stats -->
-        <div class="stats-summary grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
-          <div class="stat text-lg">Total Requests: <span class="font-bold text-green-300">{{ data.requests }}</span></div>
-          <div class="stat text-lg">Successful: <span class="font-bold text-green-300">{{ data.successful }}</span></div>
-          <div class="stat text-lg">Failed: <span class="font-bold text-red-400">{{ data.failed }}</span></div>
-        </div>
-        
-        <!-- Display available HTTP methods (always visible) -->
-        {% if data.by_method %}
-          <div class="mb-4">
-          {% for method, mdata in data.by_method.items() %}
-            <div class="method-header text-xl font-medium border-b border-gray-700 py-1">{{ method }}</div>
-          {% endfor %}
-          </div>
-        {% endif %}
-        
-        <!-- Toggle button for more details -->
-        <button class="toggle-btn bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors mb-4" onclick="toggleDetails(this)">Show More Details</button>
-        
-        <!-- Hidden details section -->
-        <div class="details hidden bg-gray-700 rounded p-4">
-          <!-- Overall response time metrics -->
-          <div class="stats-summary grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
-            <div class="stat text-sm">Avg Response: <span class="font-bold text-yellow-300">{{ data.response_stats.avg if data.response_stats.avg is not none else "N/A" }}</span> sec</div>
-            <div class="stat text-sm">Min Response: <span class="font-bold text-yellow-300">{{ data.response_stats.min if data.response_stats.min is not none else "N/A" }}</span> sec</div>
-            <div class="stat text-sm">Max Response: <span class="font-bold text-yellow-300">{{ data.response_stats.max if data.response_stats.max is not none else "N/A" }}</span> sec</div>
-            <div class="stat text-sm">Median Response: <span class="font-bold text-yellow-300">{{ data.response_stats.median if data.response_stats.median is not none else "N/A" }}</span> sec</div>
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <div class="w-64 bg-gray-800 p-6">
+      <h2 class="text-white text-2xl font-bold mb-6">APISEEK</h2>
+      <nav>
+        <a href="/apiseek" class="block text-gray-300 hover:text-white mb-4">Dashboard</a>
+        <a href="/visualseek" class="block text-gray-300 hover:text-white mb-4">Visualseek</a>
+        <a href="/dataseek" class="block text-gray-300 hover:text-white mb-4">Dataseek</a>
+        <a href="/somethingelseseek" class="block text-gray-300 hover:text-white mb-4">SomethingElseSeek</a>
+      </nav>
+    </div>
+    <!-- Main Content -->
+    <div class="flex-1 overflow-y-auto p-6 relative">
+      <h1 class="text-center text-4xl font-bold mb-10 animate-fadeInScale">APISEEK Ver. 0.2</h1>
+      {% for endpoint, data in stats.items() %}
+        <div class="api-box bg-gray-800 rounded-lg p-6 mb-8 shadow-lg border-l-4 border-blue-500 transition-transform transform hover:scale-105 animate-fadeInScale">
+          <!-- Endpoint title -->
+          <div class="api-title text-2xl font-semibold mb-4 text-blue-400">{{ endpoint }}</div>
+          
+          <!-- Overall basic stats -->
+          <div class="stats-summary grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
+            <div class="stat text-lg">Total Requests: <span class="font-bold text-green-300">{{ data.requests }}</span></div>
+            <div class="stat text-lg">Successful: <span class="font-bold text-green-300">{{ data.successful }}</span></div>
+            <div class="stat text-lg">Failed: <span class="font-bold text-red-400">{{ data.failed }}</span></div>
           </div>
           
-          <!-- Per-method detailed metrics -->
+          <!-- Display available HTTP methods (always visible) -->
           {% if data.by_method %}
-            {% for method, mdata in data.by_method.items() %}
-              {% if mdata.recent %}
-                <div class="stats-summary grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div class="stat text-sm">Most recent call Timestamp: <span class="font-bold text-yellow-300">{{ mdata.recent.timestamp }}</span></div>
-                  <div class="stat text-sm">Response Time: <span class="font-bold text-yellow-300">{{ mdata.recent.response_time }}</span> sec</div>
-                </div>
-              {% endif %}
-            {% endfor %}
+            <div class="mb-4">
+              {% for method, mdata in data.by_method.items() %}
+                <div class="method-header text-xl font-medium border-b border-gray-700 py-1">{{ method }}</div>
+              {% endfor %}
+            </div>
           {% endif %}
+          
+          <!-- Toggle button for more details -->
+          <button class="toggle-btn bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors mb-4" onclick="toggleDetails(this)">Show More Details</button>
+          
+          <!-- Hidden details section -->
+          <div class="details hidden bg-gray-700 rounded p-4">
+            <!-- Overall response time metrics -->
+            <div class="stats-summary grid grid-cols-1 sm:grid-cols-4 gap-4 mb-4">
+              <div class="stat text-sm">Avg Response: <span class="font-bold text-yellow-300">{{ data.response_stats.avg if data.response_stats.avg is not none else "N/A" }}</span> sec</div>
+              <div class="stat text-sm">Min Response: <span class="font-bold text-yellow-300">{{ data.response_stats.min if data.response_stats.min is not none else "N/A" }}</span> sec</div>
+              <div class="stat text-sm">Max Response: <span class="font-bold text-yellow-300">{{ data.response_stats.max if data.response_stats.max is not none else "N/A" }}</span> sec</div>
+              <div class="stat text-sm">Median Response: <span class="font-bold text-yellow-300">{{ data.response_stats.median if data.response_stats.median is not none else "N/A" }}</span> sec</div>
+            </div>
+            
+            <!-- Per-method detailed metrics -->
+            {% if data.by_method %}
+              {% for method, mdata in data.by_method.items() %}
+                {% if mdata.recent %}
+                  <div class="stats-summary grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="stat text-sm">Most Recent Call:</div>
+                    <div class="stat text-sm">Timestamp: <span class="font-bold text-yellow-300">{{ mdata.recent.timestamp }}</span></div>
+                    <div class="stat text-sm">Response Time: <span class="font-bold text-yellow-300">{{ mdata.recent.response_time }}</span> sec</div>
+                  </div>
+                {% endif %}
+              {% endfor %}
+            {% endif %}
+          </div>
         </div>
-      </div>
-    {% endfor %}
+      {% endfor %}
+    </div>
   </div>
   
   <script>
@@ -93,5 +106,3 @@
   </script>
 </body>
 </html>
-
-
