@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}APISEEK{% endblock %}</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap">
+  <!-- Tailwind via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom animation for title and cards */
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .animate-fadeInScale {
+      animation: fadeInScale 1s ease-out;
+      animation-delay: 0s;
+      animation-fill-mode: forwards;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 text-gray-100 font-sans">
+  <div class="flex h-screen">
+    <!-- Sidebar -->
+    <div class="w-64 bg-gray-800 p-6 flex flex-col">
+      <h2 class="text-white text-2xl font-bold mb-6">APISEEK</h2>
+      <nav class="flex-1">
+        <a href="/apiseek" class="block text-gray-300 hover:text-white mb-4">Home</a>
+        <a href="/visualseek" class="block text-gray-300 hover:text-white mb-4">Visualseek</a>
+        <a href="/dataseek" class="block text-gray-300 hover:text-white mb-4">Dataseek</a>
+        <a href="/productseek" class="block text-gray-300 hover:text-white mb-4">Productseek</a>
+      </nav>
+      <!-- Bottom-aligned link -->
+      <nav class="mt-auto">
+        <a href="https://aicision.netlify.app/" 
+           target="_blank"
+           rel="noopener noreferrer"
+           class="block text-gray-300 hover:text-white mb-4">
+            ApiSeek Official Website
+        </a>
+        </nav>
+    </div>
+    <!-- Main Content -->
+    <div class="flex-1 overflow-y-auto p-6 relative">
+      <h1 class="text-center text-4xl font-bold mb-10 animate-fadeInScale">{% block header %}{% endblock %}</h1>
+      {% block content %}{% endblock %}
+    </div>
+  </div>
+  <script>
+    function toggleDetails(button) {
+      var detailsDiv = button.nextElementSibling;
+      if (detailsDiv.classList.contains("hidden")) {
+        detailsDiv.classList.remove("hidden");
+        button.innerText = "Show Less Details";
+      } else {
+        detailsDiv.classList.add("hidden");
+        button.innerText = "Show More Details";
+      }
+    }
+  </script>
+</body>
+</html>

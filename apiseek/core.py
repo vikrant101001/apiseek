@@ -116,3 +116,14 @@ def init_app(app: FastAPI, prefix: str = "/apiseek"):
                 computed_stats[endpoint]["by_method"][method] = mdata.copy()
                 computed_stats[endpoint]["by_method"][method]["response_stats"] = aggregate_times(mdata.get("response_times", []))
         return templates.TemplateResponse("apiseek.html", {"request": request, "stats": computed_stats})
+    
+    @app.get("/visualseek", response_class=HTMLResponse)
+    async def visualseek_page(request: Request):
+        # For now, render a placeholder Visualseek page.
+        return templates.TemplateResponse("visualseek.html", {"request": request})
+    
+
+    @app.get("/dataseek", response_class=HTMLResponse)
+    async def dataseek_page(request: Request):
+        # For now, render a placeholder Visualseek page.
+        return templates.TemplateResponse("dataseek.html", {"request": request})
